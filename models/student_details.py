@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
+from configs import constants
 
 
 class RecordStatus(Enum):
-    SUCCESS = "Success"
-    WARNING = "Warning"
-    ERROR = "Error"
+    SUCCESS = constants.SUCCESS
+    WARNING = constants.WARNING
+    ERROR = constants.ERROR
 
 
 @dataclass
