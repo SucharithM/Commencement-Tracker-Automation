@@ -24,7 +24,7 @@ class StudentRecord:
         return f"{self.source_file} (Page {self.page_number})"
 
     def validate(self):
-        missing_fields = []
+        missing_fields: list[str] = []
 
         if not self.student_id.strip():
             missing_fields.append("Student ID")
