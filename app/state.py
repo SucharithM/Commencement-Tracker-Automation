@@ -3,9 +3,13 @@ from models.student_details import RecordStatus, StudentRecord
 
 
 class AppState:
+    FILTER_ALL = constants.FILTER_ALL
+    FILTER_SUCCESS = constants.SUCCESS
+    FILTER_ERRORS = constants.ERROR
+
     def __init__(self):
         self.records = []
-        self.active_filter = "All"
+        self.active_filter = self.FILTER_ALL
         self.selected_file_name = ""
         self.total_pages = 0
         self.current_page = 0
@@ -53,30 +57,30 @@ class AppState:
             ]
         return self.records
 
-
-fake_records = [
-    StudentRecord(
-        source_file="Batch1.pdf",
-        page_number="1",
-        student_id="0222",
-        first_name="John",
-        last_name="Doe",
-        status=RecordStatus.SUCCESS,
-    ),
-    StudentRecord(
-        source_file="Batch2.pdf",
-        page_number="3",
-        student_id="08852",
-        first_name="Jane",
-        last_name="Doe",
-        status=RecordStatus.WARNING,
-    ),
-    StudentRecord(
-        source_file="Batch3.pdf",
-        page_number="2",
-        student_id="055662",
-        first_name="Bill",
-        last_name="Doe",
-        status=RecordStatus.ERROR,
-    ),
-]
+    def load_fake_records(self):
+        self.records = [
+            StudentRecord(
+                source_file="Batch1.pdf",
+                page_number="1",
+                student_id="0222",
+                first_name="John",
+                last_name="Doe",
+                status=RecordStatus.SUCCESS,
+            ),
+            StudentRecord(
+                source_file="Batch2.pdf",
+                page_number="3",
+                student_id="08852",
+                first_name="Jane",
+                last_name="Doe",
+                status=RecordStatus.WARNING,
+            ),
+            StudentRecord(
+                source_file="Batch3.pdf",
+                page_number="2",
+                student_id="055662",
+                first_name="Bill",
+                last_name="Doe",
+                status=RecordStatus.ERROR,
+            ),
+        ]
