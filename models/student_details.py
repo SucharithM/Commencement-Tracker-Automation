@@ -1,6 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from configs import constants
+from uuid import uuid4
 
 
 class RecordStatus(Enum):
@@ -18,6 +19,7 @@ class StudentRecord:
     last_name: str = ""
     status: RecordStatus = RecordStatus.ERROR
     error_message: str = ""
+    object_id: str = field(default_factory=lambda: str(uuid4()))
 
     @property
     def source_location(self) -> str:
