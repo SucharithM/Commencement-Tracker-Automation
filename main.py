@@ -1,14 +1,24 @@
+import flet as ft
+
 from app.state import AppState
 from app.theme import APP_BG
-import flet as ft
+from ui.layout import build_layout
 
 
 async def main(page: ft.Page):
     state = AppState()
-    page.title = "Commencement Tracker"
+    state.load_fake_records()
+
+    page.title = "Commencement QR Data Utility"
     page.bgcolor = APP_BG
     page.padding = 24
-    # build_layout(page, state)
+    page.scroll = ft.ScrollMode.AUTO
+
+    page.theme = ft.Theme(
+        font_family="Segoe UI",
+    )
+
+    build_layout(page, state)
 
 
-ft.run(main)
+ft.app(target=main)
