@@ -9,17 +9,17 @@ from app.theme import (
 )
 
 
-def build_upload_zone(state) -> ft.Control:
+def build_upload_zone(state, on_choose_pdf) -> ft.Control:
     selected_file_text = (
         f"{state.selected_file_name} | {state.total_pages} pages"
         if state.selected_file_name
         else "No file selected"
     )
 
-    progress_text = (
-        f"Processing page {state.current_page} of {state.total_pages}..."
-        if state.is_processing
-        else "Waiting for PDF upload..."
+    progress_value = (
+        state.current_page / state.total_pages
+        if state.total_pages and state.current_page
+        else 0
     )
 
     return ft.Container(
@@ -44,15 +44,17 @@ def build_upload_zone(state) -> ft.Control:
                                     color=TEXT_PRIMARY,
                                 ),
                                 ft.Text(
-                                    "Choose a multi-page PDF containing scanned student cards.",
+                                    "Please choose the PDF containing scanned student cards.",
                                     size=13,
                                     color=TEXT_MUTED,
                                 ),
                             ],
                         ),
                         ft.ElevatedButton(
-                            content="Choose PDF",  # type: ignore
+                            content="Choose PDF",
                             icon=ft.Icons.UPLOAD_FILE,
+                            disabled=state.is_processing,
+                            on_click=on_choose_pdf,
                             style=ft.ButtonStyle(
                                 bgcolor=PRIMARY,
                                 color=WHITE,
@@ -75,14 +77,14 @@ def build_upload_zone(state) -> ft.Control:
                             color=TEXT_PRIMARY,
                         ),
                         ft.Text(
-                            progress_text,
+                            state.progress_message,
                             size=13,
                             color=TEXT_MUTED,
                         ),
                     ],
                 ),
                 ft.ProgressBar(
-                    value=0,
+                    value=progress_value,
                     color=PRIMARY,
                     bgcolor="#E9ECEF",
                     height=4,
