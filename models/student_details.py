@@ -1,11 +1,13 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
+from configs import constants
+from uuid import uuid4
 
 
 class RecordStatus(Enum):
-    SUCCESS = "Success"
-    WARNING = "Warning"
-    ERROR = "Error"
+    SUCCESS = constants.SUCCESS
+    WARNING = constants.WARNING
+    ERROR = constants.ERROR
 
 
 @dataclass
@@ -17,13 +19,14 @@ class StudentRecord:
     last_name: str = ""
     status: RecordStatus = RecordStatus.ERROR
     error_message: str = ""
+    object_id: str = field(default_factory=lambda: str(uuid4()))
 
     @property
     def source_location(self) -> str:
         return f"{self.source_file} (Page {self.page_number})"
 
     def validate(self):
-        missing_fields = []
+        missing_fields: list[str] = []
 
         if not self.student_id.strip():
             missing_fields.append("Student ID")
