@@ -7,9 +7,8 @@ from ui.layout import build_layout
 
 async def main(page: ft.Page):
     state = AppState()
-    state.load_fake_records()
 
-    page.title = "Commencement QR Data Utility"
+    page.title = "Commencement Card Automation"
     page.bgcolor = APP_BG
     page.padding = 24
     page.scroll = ft.ScrollMode.AUTO
