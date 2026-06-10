@@ -208,39 +208,191 @@ def _build_record_row(
                 )
             ),
             ft.DataCell(
-                _cell_text(
-                    record.student_id,
-                    color=text_color,
-                )
+                _editable_cell_content(
+                    record,
+                    "card_id",
+                    state,
+                    refresh_ui,
+                    move_edit_focus,
+                    text_color,
+                ),
+                show_edit_icon=True,
+                on_double_tap=edit_handler("card_id"),
             ),
             ft.DataCell(
-                _cell_text(
-                    record.first_name,
-                    color=text_color,
-                )
+                _editable_cell_content(
+                    record,
+                    "first_name",
+                    state,
+                    refresh_ui,
+                    move_edit_focus,
+                    text_color,
+                ),
+                show_edit_icon=True,
+                on_double_tap=edit_handler("first_name"),
             ),
             ft.DataCell(
-                _cell_text(
-                    record.last_name,
-                    color=text_color,
-                )
+                _editable_cell_content(
+                    record,
+                    "last_name",
+                    state,
+                    refresh_ui,
+                    move_edit_focus,
+                    text_color,
+                ),
+                show_edit_icon=True,
+                on_double_tap=edit_handler("last_name"),
+            ),
+            ft.DataCell(
+                _editable_cell_content(
+                    record,
+                    "college",
+                    state,
+                    refresh_ui,
+                    move_edit_focus,
+                    text_color,
+                ),
+                show_edit_icon=True,
+                on_double_tap=edit_handler("college"),
+            ),
+            ft.DataCell(
+                _editable_cell_content(
+                    record,
+                    "session",
+                    state,
+                    refresh_ui,
+                    move_edit_focus,
+                    text_color,
+                ),
+                show_edit_icon=True,
+                on_double_tap=edit_handler("session"),
             ),
             ft.DataCell(_status_text(record)),
             ft.DataCell(
-                ft.IconButton(
-                    icon=ft.Icons.DELETE_OUTLINE,
-                    icon_color=ERROR_TEXT,
-                    tooltip="Delete row",
-                    on_click=handle_delete,
+                ft.Row(
+                    spacing=2,
+                    controls=[
+                        ft.IconButton(
+                            icon=ft.Icons.VISIBILITY_OUTLINED,
+                            icon_color=PRIMARY,
+                            tooltip="Preview source page",
+                            disabled=state.is_processing,
+                            visible=record.status in [
+                                RecordStatus.WARNING,
+                                RecordStatus.ERROR,
+                            ],
+                            on_click=handle_preview,
+                        ),
+                        ft.IconButton(
+                            icon=ft.Icons.DELETE_OUTLINE,
+                            icon_color=ERROR_TEXT,
+                            tooltip="Delete row",
+                            disabled=state.is_processing,
+                            on_click=handle_delete,
+                        ),
+                    ],
                 )
             ),
         ],
     )
 
 
+def _begin_edit(state, refresh_ui, object_id: str, field_name: str) -> None:
+    state.set_editing_cell(object_id, field_name)
+    refresh_ui()
+
+
+def _editable_cell_content(
+    record: StudentRecord,
+    field_name: str,
+    state,
+    refresh_ui,
+    move_edit_focus,
+    text_color: str,
+) -> ft.Control:
+    value = getattr(record, field_name)
+    is_editing = state.editing_cell == (record.object_id, field_name)
+    is_missing = not value.strip()
+
+    if state.is_processing:
+        return ft.Text(
+            value if value else "-",
+            color=TEXT_MUTED,
+            size=13,
+            no_wrap=True,
+        )
+
+    if is_editing:
+        def handle_change(e):
+            state.update_record_field(record.object_id, field_name, e.control.value)
+
+        def handle_submit(e):
+            state.update_record_field(record.object_id, field_name, e.control.value)
+            move_edit_focus(record.object_id, field_name, "down")
+
+        def handle_blur(e):
+            state.update_record_field(record.object_id, field_name, e.control.value)
+
+        return ft.TextField(
+            value=value,
+            autofocus=True,
+            dense=True,
+            border=ft.InputBorder.UNDERLINE,
+            border_color=PRIMARY,
+            focused_border_color=PRIMARY,
+            color=TEXT_PRIMARY,
+            text_size=13,
+            content_padding=ft.Padding.symmetric(horizontal=4, vertical=2),
+            on_change=handle_change,
+            on_submit=handle_submit,
+            on_blur=handle_blur,
+            width=170,
+        )
+
+    display = ft.Text(
+        value if value else "-",
+        color=ERROR_TEXT if is_missing else text_color,
+        size=13,
+        no_wrap=True,
+    )
+
+    controls = [display]
+
+    if is_missing:
+        controls.append(
+            ft.Icon(
+                icon=ft.Icons.ERROR_OUTLINE,
+                color=WARNING,
+                size=15,
+                tooltip="Missing value",
+            )
+        )
+
+    controls.append(
+        ft.IconButton(
+            icon=ft.Icons.EDIT_OUTLINED,
+            icon_color=TEXT_MUTED,
+            icon_size=16,
+            tooltip="Edit value",
+            on_click=lambda e: _begin_edit(
+                state,
+                refresh_ui,
+                record.object_id,
+                field_name,
+            ),
+        )
+    )
+
+    return ft.Row(
+        spacing=6,
+        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        controls=controls,
+    )
+
+
 def _cell_text(value: str, color: str) -> ft.Text:
     return ft.Text(
-        value if value else "—",
+        value if value else "-",
         color=color,
         size=13,
         no_wrap=True,
