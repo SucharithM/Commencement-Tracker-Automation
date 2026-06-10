@@ -28,7 +28,7 @@ def build_filter_tabs(state, refresh_ui) -> ft.Control:
             ),
             _build_pill(
                 label="Errors",
-                count=state.error_count(),
+                count=state.error_count() + state.warning_count(),
                 filter_value=state.FILTER_ERRORS,
                 state=state,
                 refresh_ui=refresh_ui,
@@ -44,6 +44,7 @@ def _build_pill(
 
     def handle_click(e):
         state.active_filter = filter_value
+        state.reset_table_page()
         refresh_ui()
 
     return ft.Container(
