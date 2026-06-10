@@ -3,10 +3,11 @@ import flet as ft
 from app.theme import PRIMARY, TEXT_MUTED, WHITE
 
 
-def build_footer(state) -> ft.Control:
+def build_footer(state, on_export) -> ft.Control:
     summary = (
         f"Total Rows: {state.total_count()} | "
-        f"Ready: {state.success_count()} | "
+        f"Success: {state.success_count()} | "
+        f"Warnings: {state.warning_count()} | "
         f"Errors: {state.error_count()}"
     )
 
@@ -23,9 +24,10 @@ def build_footer(state) -> ft.Control:
                     weight=ft.FontWeight.W_500,
                 ),
                 ft.ElevatedButton(
-                    content="Export to Excel",  # type: ignore
+                    content="Export to Excel",
                     icon=ft.Icons.DOWNLOAD,
-                    on_click=lambda e: None,
+                    disabled=not state.records or state.is_processing,
+                    on_click=on_export,
                     style=ft.ButtonStyle(
                         bgcolor=PRIMARY,
                         color=WHITE,
