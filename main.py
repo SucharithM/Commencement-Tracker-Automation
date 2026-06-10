@@ -20,4 +20,5 @@ async def main(page: ft.Page):
     build_layout(page, state)
 
 
-ft.app(target=main)
+if __name__ == "__main__":
+    ft.run(main)
