@@ -2,12 +2,16 @@ anyio==4.13.0
 certifi==2026.5.20
 et_xmlfile==2.0.0
 flet==0.85.2
+flet-desktop==0.85.2
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.18
 msgpack==1.1.2
+numpy==2.2.6
 oauthlib==3.3.1
+opencv-python-headless==4.12.0.88
 openpyxl==3.1.5
+PyMuPDF==1.26.6
 repath==0.9.0
 six==1.17.0
